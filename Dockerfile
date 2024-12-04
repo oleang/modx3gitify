@@ -6,15 +6,15 @@ RUN apt-get update && apt-get install -y \
 	libfreetype6-dev \
 	libjpeg62-turbo-dev \
 	libonig-dev libpng-dev libxml2-dev libzip-dev zip unzip curl git vim \
-	default-mysql-client mariadb-client \
-	&& rm -rf /var/lib/apt/lists/* 
+	default-mysql-client mariadb-client
 
 RUN docker-php-ext-install mysqli pdo pdo_mysql zip gd mbstring
 
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN mysql --version && mysqldump --version
-
 
 RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
 
@@ -38,4 +38,3 @@ RUN chown -R www-data:www-data /var/www/html
 EXPOSE 9000
 
 CMD [ "php-fpm" ]
-
