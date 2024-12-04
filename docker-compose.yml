@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: modx3
+    container_name: MODX3-app
     volumes:
       - ./modx3:/var/www/html
     networks:
@@ -13,7 +13,7 @@ services:
 
   mariadb:
     image: mariadb:latest
-    container_name: mariadb
+    container_name: MODX3-db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -27,7 +27,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin:latest
-    container_name: pma
+    container_name: MODX3-pma
     restart: always
     environment:
       PMA_HOST: mariadb
@@ -39,7 +39,7 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: nginx
+    container_name: MODX3-nginx
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./modx3:/var/www/html
@@ -56,4 +56,3 @@ volumes:
 
 networks:
   app_network:
-
