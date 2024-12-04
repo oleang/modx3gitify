@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: modx3
+    volumes:
+      - ./modx3:/var/www/html
+    networks:
+      - app_network
+
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: modxdb
+      MYSQL_USER: modxuser
+      MYSQL_PASSWORD: modxpassword
+    volumes:
+      - ./mariadb:/var/lib/mysql
+    networks:
+      - app_network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: pma
+    restart: always
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+    ports:
+      - "${PMA_OUT_PORT}:80"
+    networks:
+      - app_network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./modx3:/var/www/html
+    ports:
+      - "${MODX_OUT_PORT}:80"
+    depends_on:
+      - php
+    networks:
+      - app_network
+
+volumes:
+  mariadb:
+  modx3:
+
+networks:
+  app_network:
+
